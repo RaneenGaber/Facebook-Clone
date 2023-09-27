@@ -1,1 +1,99 @@
-<h1>register</h1>
+<div [hidden]="!error" class="alert alert-danger">
+  {{ error }}
+</div>
+<fieldset [disabled]="isLoading">
+  <form (ngSubmit)="register()" [formGroup]="registerForm">
+    <mat-form-field>
+      <mat-label>Enter your Username</mat-label>
+      <input
+        matInput
+        placeholder="raneen"
+        formControlName="name"
+        [errorStateMatcher]="matcher"
+      />
+      <mat-error *ngIf="registerForm.get('username')?.hasError('required')">
+        Username is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>phone Number</mat-label>
+      <input
+        type="tel"
+        matInput
+        placeholder="0114-2222-123"
+        formControlName="phone"
+      />
+      <mat-icon matSuffix>mode_edit</mat-icon>
+      <mat-error *ngIf="registerForm.get('phoneNumber')?.hasError('required')">
+        phone is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Enter your email</mat-label>
+      <input
+        matInput
+        placeholder="pat@example.com"
+        formControlName="email"
+        [errorStateMatcher]="matcher"
+      />
+      <mat-error
+        *ngIf="
+          registerForm.get('email')?.hasError('email') &&
+          !registerForm.get('email')?.hasError('required')
+        "
+      >
+        Please enter a valid email address
+      </mat-error>
+      <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input
+        matInput
+        formControlName="password"
+        [type]="hide ? 'password' : 'text'"
+        required
+      />
+      <button
+        matSuffix
+        (click)="hide = !hide"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide"
+      >
+        <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+      <mat-error *ngIf="registerForm.get('password')?.hasError('required')">
+        Password is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <button
+      type="submit"
+      mat-raised-button
+      [disabled]="registerForm.invalid"
+      color="primary"
+      [ngStyle]="registerForm.invalid ? { background: 'blue' } : {}"
+      class="btn"
+    >
+      <span [hidden]="isLoading">Sign up</span>
+      <span [hidden]="!isLoading">
+        <app-spinner
+          color="accent"
+          [strokeWidth]="8"
+          [diameter]="50"
+        ></app-spinner>
+      </span>
+    </button>
+    <hr />
+    <div class="text-center">
+      <button
+        class="btn login-btn"
+        mat-raised-button
+        [routerLink]="['/auth/login']"
+      >
+        Already have account
+      </button>
+    </div>
+  </form>
+</fieldset>

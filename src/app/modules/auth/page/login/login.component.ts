@@ -1,14 +1,26 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  UntypedFormControl
+  FormControl,
+  Validators,
+  FormGroup,
+  FormGroupDirective,
+  NgForm
 } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { tap, delay, finalize, catchError } from 'rxjs/operators';
 import { of, Subscription } from 'rxjs';
 
 import { AuthService } from './../../../../core/resources/service/auth.service';
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+
 
 @Component({
   selector: 'app-login',
@@ -16,48 +28,44 @@ import { AuthService } from './../../../../core/resources/service/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnDestroy {
+  hide = true;
   error!: string;
-  isLoading!: boolean;
-  loginForm!: UntypedFormGroup;
+  isLoading!: boolean ;
 
-  private sub = new Subscription();
-
+  private subscribe = new Subscription();
+  loginForm:FormGroup;
   constructor(
-    private formBuilder: UntypedFormBuilder,
     private router: Router,
     private authService: AuthService
   ) {
-    this.buildForm();
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required]),
+
+    })
   }
 
-  get f() {
-    return this.loginForm.controls;
-  }
+  matcher = new MyErrorStateMatcher();
 
   login() {
     this.isLoading = true;
-
-    const credentials = this.loginForm.value;
-
-    this.sub = this.authService
+    const credentials = this.loginForm.value
+    this.subscribe = this.authService
       .login(credentials)
       .pipe(
         delay(1500),
         tap(() => this.router.navigate(['/home'])),
         finalize(() => (this.isLoading = false)),
-        catchError(error => of((this.error = error)))
+        catchError(error => (this.error = error))
       )
-      .subscribe();
+      .subscribe(
+        {
+          next:(value)=> console.log(value)
+        }
+      );
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
-
-  private buildForm(): void {
-    this.loginForm = new UntypedFormGroup({
-      username: new UntypedFormControl(''),
-      password: new UntypedFormControl('')
-    });
+    this.subscribe.unsubscribe();
   }
 }

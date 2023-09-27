@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ThemePalette } from '@angular/material/core';
 
 @Component({
   selector: 'app-spinner',
@@ -6,6 +7,10 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./spinner.component.css']
 })
 export class SpinnerComponent {
-  @Input() public isLoading = false;
+  @Input() public strokeWidth: number=18;
+
+  @Input() public diameter: number = 18;
+
+  @Input() public color: ThemePalette ='primary';
   @Input() public message!: string;
 }

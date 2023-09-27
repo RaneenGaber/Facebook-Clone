@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { IUser } from 'src/app/data/schema/iuser';
+import { RegisterContextInterface } from '../models/register-context-interface';
 
 
 @Injectable({
@@ -19,25 +20,27 @@ export class AuthService {
     name: null,
     image: null,
     email: null,
-    facebook: null,
-    phone: null,
+    createdAt:null,
+    updatedAt:null,
+    facebookUrl: null,
+    phoneNumber: null,
     bio: null
 
   };
   constructor(private http: HttpClient) { }
 
   login(model: LoginContextInterface): Observable<IUser> {
-    return this.http.post(this.baseUrl + 'login', model).pipe(
+    return this.http.post('/api/user/login', model).pipe(
       map((response: any) => {
-        const decodedToken = this.helper.decodeToken(response.token);
-
-        this.currentUser.name = decodedToken.given_name;
-        this.currentUser.email = decodedToken.email;
-        this.currentUser.image = decodedToken.image;
-        this.currentUser.phone = decodedToken.phone;
-        this.currentUser.facebook = decodedToken.facebook;
-        this.currentUser.bio = decodedToken.bio;
-
+        this.currentUser.id = response.user.id;
+        this.currentUser.name = response.user.name;
+        this.currentUser.email = response.user.email;
+        this.currentUser.createdAt = response.user.createdAt;
+        this.currentUser.updatedAt = response.user.updatedAt;
+        this.currentUser.image = response.user.image;
+        this.currentUser.phoneNumber = response.user.phoneNumber;
+        this.currentUser.facebookUrl = response.user.facebookUrl;
+        this.currentUser.bio = response.user.bio;
 
         localStorage.setItem('token', response.token);
 
@@ -57,18 +60,21 @@ export class AuthService {
       name: null,
       image: null,
       email: null,
-      facebook: null,
-      phone: null,
+      createdAt: null,
+      updatedAt: null,
+      facebookUrl: null,
+      phoneNumber: null,
       bio: null
     };
     localStorage.removeItem('token');
   }
 
-  register(model: any) {
-    return this.http.post(this.baseUrl + 'register', model);
+  register(model: RegisterContextInterface): Observable<IUser> {
+    return this.http.post('/api/user/add-user', model).pipe(
+      (response: any) => {
+        return response
+      }
+    );
   }
 
-  confirmEmail(model: any) {
-    return this.http.post(this.baseUrl + 'confirm-email', model);
-  }
 }

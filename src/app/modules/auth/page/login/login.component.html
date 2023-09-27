@@ -1,1 +1,81 @@
-<h1>Login</h1>
+<div [hidden]="!error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<fieldset [disabled]="isLoading">
+  <form (ngSubmit)="login()" [formGroup]="loginForm">
+    <mat-form-field>
+      <mat-label>Enter your email</mat-label>
+      <input
+        matInput
+        placeholder="pat@example.com"
+        formControlName="email"
+        [errorStateMatcher]="matcher"
+      />
+      <mat-error
+        *ngIf="
+          loginForm.get('email')?.hasError('email') &&
+          !loginForm.get('email')?.hasError('required')
+        "
+      >
+        Please enter a valid email address
+      </mat-error>
+      <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input
+        matInput
+        formControlName="password"
+        [type]="hide ? 'password' : 'text'"
+        required
+      />
+      <button
+        matSuffix
+        (click)="hide = !hide"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide"
+      >
+        <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+        Password is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <button
+      type="submit"
+      mat-raised-button
+      [disabled]="loginForm.invalid"
+      color="primary"
+      [ngStyle]="loginForm.invalid ? { background: 'blue' } : {}"
+      class="btn"
+    >
+      <span [hidden]="isLoading">Log in</span>
+      <span [hidden]="!isLoading">
+        <app-spinner
+          color="accent"
+          [strokeWidth]="8"
+          [diameter]="50"
+        ></app-spinner>
+      </span>
+    </button>
+    <div class="my-3 text-center">
+      <a color="primary" [routerLink]="['/auth/register']"
+        >Forgotten password?</a
+      >
+    </div>
+    <hr />
+    <div class="text-center">
+      <button
+        class="btn signUp-btn"
+        mat-raised-button
+        [routerLink]="['/auth/register']"
+      >
+        Create new account
+      </button>
+    </div>
+  </form>
+</fieldset>

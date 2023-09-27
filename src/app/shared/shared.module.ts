@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { MaterialModule } from './material.module';
-
 import {
   FontAwesomeModule,
   FaIconLibrary
@@ -34,6 +33,7 @@ import { faMediumM, faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import { ControlMessagesComponent } from './component/control-messages/control-messages.component';
 import { SpinnerComponent } from './component/spinner/spinner.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -41,7 +41,8 @@ import { SpinnerComponent } from './component/spinner/spinner.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    MatProgressSpinnerModule
   ],
   declarations: [ControlMessagesComponent, SpinnerComponent],
   exports: [
@@ -49,10 +50,12 @@ import { SpinnerComponent } from './component/spinner/spinner.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    MaterialModule,
     FontAwesomeModule,
     ControlMessagesComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    MaterialModule,
+    MatProgressSpinnerModule
+
   ]
 })
 export class SharedModule {

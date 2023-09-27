@@ -1,0 +1,15 @@
+mat-form-field{
+  width: 100% !important;
+}
+a{
+  font-size:  18px;
+}
+.btn{
+  width: 100%;
+  height: 50px;
+  font-size: 22px;
+  color: white!important;
+}
+.signUp-btn{
+  background-color: #42b72a !important;
+}
